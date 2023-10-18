@@ -1,61 +1,67 @@
 "use strict";
 
-// Random number generator
-let secretNumber = Math.floor(Math.random() * 20 + 1);
+// Elements
+const resetBtn = document.querySelector(".again");
+const checkBtn = document.querySelector(".check");
+const guessNum = document.querySelector(".number");
+const inputNum = document.querySelector(".guess");
+const msg = document.querySelector(".message");
+const score = document.querySelector(".score");
+const highScore = document.querySelector(".highscore");
+const body = document.querySelector("body");
+let randomNum = Math.floor(Math.random() * 20) + 1;
+// End of Elements
 
-// Score
-let score = 20;
+// Initial score and highscore
+let userScore = 20;
+let userHighScore = 0;
 
-// High score
-let highScore = 0;
+// Functions
+// play the game
+const play = () => {
+  const userGuess = +inputNum.value;
+  if (!userGuess) {
+    msg.textContent = "No number!";
+  } else if (userGuess === randomNum) {
+    guessNum.textContent = randomNum;
+    msg.textContent = "Correct Number!";
+    body.style.backgroundColor = "#60b347";
+    guessNum.style.width = "30rem";
 
-// Main (event handler when the player is playing)
-document.querySelector(".check").addEventListener("click", function () {
-  const guess = Number(document.querySelector(".guess").value);
-
-  // If player didn't guess the number
-  if (!guess) {
-    document.querySelector(".message").textContent = "No number!";
-
-    // When guess is right
-  } else if (guess === secretNumber) {
-    document.querySelector(".number").textContent = secretNumber;
-    document.querySelector(".message").textContent = "Correct number!";
-    document.querySelector("body").style.backgroundColor = "#60b347";
-    document.querySelector(".number").style.width = "30rem";
-
-    if (score > highScore) {
-      highScore = score;
-      document.querySelector(".highscore").textContent = highScore;
+    if (userScore > userHighScore) {
+      userHighScore = userScore;
+      highScore.textContent = userHighScore;
     }
-
-    // When guess is wrong
-  } else if (guess !== secretNumber) {
-    if (score > 1) {
-      document.querySelector(".message").textContent =
-        guess > secretNumber ? "Too high!" : "Too low!";
-      score--;
-      document.querySelector(".score").textContent = score;
+  } else if (userGuess !== randomNum) {
+    if (userScore > 1) {
+      msg.textContent = userGuess > randomNum ? "Too high!" : "Too low!";
+      userScore--;
+      score.textContent = userScore;
     } else {
-      document.querySelector(".message").textContent = "You lost the game!";
-      document.querySelector(".score").textContent = 0;
+      msg.textContent = "You lost the game!";
+      score.textContent = 0;
+      body.style.backgroundColor = "red";
     }
   }
-});
-
-// Function that resets the game
-const resetGame = function () {
-  score = 20;
-  secretNumber = Math.floor(Math.random() * 20 + 1);
-  document.querySelector(".number").textContent = "?";
-  document.querySelector(".guess").value = "";
-  document.querySelector(".score").textContent = 20;
-  document.querySelector(".message").textContent = "Start guessing...";
-  document.querySelector("body").style.backgroundColor = "#222";
-  document.querySelector(".number").style.width = "15rem";
 };
 
-// Reset (event handler when the player presses `Again!` button)
-document.querySelector(".again").addEventListener("click", function () {
-  resetGame();
-});
+// reset the game
+const reset = () => {
+  userScore = 20;
+  randomNum = Math.floor(Math.random() * 20) + 1;
+  guessNum.textContent = "?";
+  inputNum.value = "";
+  score.textContent = userScore;
+  msg.textContent = "Start guessing...";
+  body.style.backgroundColor = "#222";
+  guessNum.style.width = "15rem";
+};
+// End of Functions
+
+// Event handlers
+// play game when user clicks check button
+checkBtn.addEventListener("click", play);
+
+// reset game when user click again button
+resetBtn.addEventListener("click", reset);
+// End of Event handlers
